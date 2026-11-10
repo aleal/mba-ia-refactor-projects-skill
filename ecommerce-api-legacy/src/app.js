@@ -1,14 +1,18 @@
-const express = require('express');
-const AppManager = require('./AppManager');
-const { config } = require('./utils');
+const config = require('./config');
+const { openDatabase } = require('./database/connection');
+const { createApp } = require('./server');
+const { createLogger } = require('./utils/logger');
 
-const app = express();
-app.use(express.json());
+const logger = createLogger(config.logLevel);
 
-const manager = new AppManager();
-manager.initDb();
-manager.setupRoutes(app);
+async function main() {
+    const db = await openDatabase(config.dbPath);
+    const app = createApp({ db, config, logger });
+    app.listen(config.port, () => logger.info(`LMS API rodando na porta ${config.port}`));
+    if (!config.adminToken) logger.warn('ADMIN_TOKEN não definido: rotas administrativas bloqueadas.');
+}
 
-app.listen(config.port, () => {
-    console.log(`Frankenstein LMS rodando na porta ${config.port}...`);
+main().catch((err) => {
+    logger.error('Falha ao iniciar a aplicação:', err);
+    process.exit(1);
 });
