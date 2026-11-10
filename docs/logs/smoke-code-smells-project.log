@@ -1,0 +1,37 @@
+== code-smells-project (porta 5077) ==
+-- rotas públicas
+GET    /                                      [-]            -> 200 ok   {"endpoints":{"health":"/health","login":"/login","pedidos":"/pedidos","produtos":"/produt
+GET    /health                                [-]            -> 200 ok   {"ambiente":"producao","counts":{"pedidos":0,"produtos":10,"usuarios":3},"database":"conne
+GET    /produtos                              [-]            -> 200 ok   {"dados":[{"ativo":1,"categoria":"informatica","criado_em":"2026-11-10 13:55:43","descrica
+GET    /produtos/busca?q=Mouse&preco_max=100  [-]            -> 200 ok   {"dados":[{"ativo":1,"categoria":"informatica","criado_em":"2026-11-10 13:55:43","descrica
+GET    /produtos/1                            [-]            -> 200 ok   {"dados":{"ativo":1,"categoria":"informatica","criado_em":"2026-11-10 13:55:43","descricao
+GET    /produtos/999                          [-]            -> 404 ok   {"erro":"Produto n\u00e3o encontrado","sucesso":false} 
+POST   /usuarios                              [-]            -> 201 ok   {"dados":{"id":4},"sucesso":true} 
+POST   /login                                 [-]            -> 200 ok   {"dados":{"email":"ana@x.com","id":4,"nome":"Ana","tipo":"cliente"},"mensagem":"Login OK",
+POST   /login                                 [-]            -> 401 ok   {"erro":"Email ou senha inv\u00e1lidos","sucesso":false} 
+POST   /pedidos                               [-]            -> 201 ok   {"dados":{"pedido_id":1,"total":179.8},"mensagem":"Pedido criado com sucesso","sucesso":tr
+POST   /pedidos                               [-]            -> 400 ok   {"erro":"Item inv\u00e1lido: produto_id e quantidade (inteiro positivo) s\u00e3o obrigat\u
+-- rotas privilegiadas (finding AP11): sem credencial e com X-Admin-Token
+POST   /produtos                              [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+POST   /produtos                              [X-Admin-Token] -> 201 ok   {"dados":{"id":11},"mensagem":"Produto criado","sucesso":true} 
+PUT    /produtos/11                           [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+PUT    /produtos/11                           [X-Admin-Token] -> 200 ok   {"mensagem":"Produto atualizado","sucesso":true} 
+GET    /usuarios                              [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+GET    /usuarios                              [X-Admin-Token] -> 200 ok   {"dados":[{"criado_em":"2026-11-10 13:55:43","email":"admin@loja.com","id":1,"nome":"Admin
+GET    /usuarios/2                            [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+GET    /usuarios/2                            [X-Admin-Token] -> 200 ok   {"dados":{"criado_em":"2026-11-10 13:55:43","email":"joao@email.com","id":2,"nome":"Jo\u00
+GET    /pedidos                               [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+GET    /pedidos                               [X-Admin-Token] -> 200 ok   {"dados":[{"criado_em":"2026-11-10 13:55:43","id":1,"itens":[{"preco_unitario":89.9,"produ
+GET    /pedidos/usuario/2                     [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+GET    /pedidos/usuario/2                     [X-Admin-Token] -> 200 ok   {"dados":[{"criado_em":"2026-11-10 13:55:43","id":1,"itens":[{"preco_unitario":89.9,"produ
+PUT    /pedidos/1/status                      [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+PUT    /pedidos/1/status                      [X-Admin-Token] -> 200 ok   {"mensagem":"Status atualizado","sucesso":true} 
+GET    /relatorios/vendas                     [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+GET    /relatorios/vendas                     [X-Admin-Token] -> 200 ok   {"dados":{"desconto_aplicavel":0,"faturamento_bruto":179.8,"faturamento_liquido":179.8,"pe
+DELETE /produtos/11                           [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+DELETE /produtos/11                           [X-Admin-Token] -> 200 ok   {"mensagem":"Produto deletado","sucesso":true} 
+POST   /admin/query                           [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+POST   /admin/query                           [X-Admin-Token] -> 200 ok   {"dados":[{"n":10}],"sucesso":true} 
+POST   /admin/reset-db                        [-]            -> 401 ok   {"erro":"Credencial administrativa ausente ou inv\u00e1lida","sucesso":false} 
+POST   /admin/reset-db                        [X-Admin-Token] -> 200 ok   {"mensagem":"Banco de dados resetado","sucesso":true} 
+-- resultado: 33/33 verificações ok; tracebacks no log do servidor: 0
