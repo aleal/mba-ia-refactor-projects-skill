@@ -1,0 +1,45 @@
+== task-manager-api (porta 5077) ==
+Seed concluído com sucesso!
+  3 usuários
+  4 categorias
+  10 tasks
+-- rotas públicas
+GET    /                                      [-]            -> 200 ok   {"message":"Task Manager API","version":"1.0"} 
+GET    /health                                [-]            -> 200 ok   {"status":"ok","timestamp":"2026-11-10 13:55:45.593293"} 
+GET    /tasks                                 [-]            -> 200 ok   [{"category_id":1,"category_name":"Backend","created_at":"2026-11-10 13:55:44.867891","des
+GET    /tasks/1                               [-]            -> 200 ok   {"category_id":1,"created_at":"2026-11-10 13:55:44.867891","description":"Adicionar autent
+GET    /tasks/999                             [-]            -> 404 ok   {"error":"Task n\u00e3o encontrada"} 
+GET    /tasks/search?q=login&status=in_progress [-]            -> 200 ok   [{"category_id":2,"created_at":"2026-11-10 13:55:44.867893","description":"Tela de login r
+GET    /tasks/stats                           [-]            -> 200 ok   {"cancelled":1,"completion_rate":10.0,"done":1,"in_progress":2,"overdue":2,"pending":6,"to
+POST   /tasks                                 [-]            -> 201 ok   {"category_id":1,"created_at":"2026-11-10 13:55:45.640688","description":"","due_date":"20
+POST   /tasks                                 [-]            -> 400 ok   {"error":"T\u00edtulo muito curto"} 
+PUT    /tasks/11                              [-]            -> 200 ok   {"category_id":1,"created_at":"2026-11-10 13:55:45.640688","description":"","due_date":"20
+DELETE /tasks/11                              [-]            -> 200 ok   {"message":"Task deletada com sucesso"} 
+GET    /users/1/tasks                         [-]            -> 200 ok   [{"created_at":"2026-11-10 13:55:44.867891","description":"Adicionar autentica\u00e7\u00e3
+GET    /categories                            [-]            -> 200 ok   [{"color":"#3498db","created_at":"2026-11-10 13:55:44.865835","description":"Tarefas de ba
+POST   /users                                 [-]            -> 201 ok   {"active":true,"created_at":"2026-11-10 13:55:45.729762","email":"ana@x.com","id":4,"name"
+POST   /login                                 [-]            -> 200 ok   {"message":"Login realizado com sucesso","token":"eyJ1aWQiOjF9.avMiYQ.fBoaKFALwdsXtbjOdj11
+-- rotas privilegiadas (finding AP11): sem token, token falso, papel user e admin
+GET    /users                                 [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+GET    /users                                 [Authorization] -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+GET    /users                                 [Authorization] -> 403 ok   {"error":"Permiss\u00e3o insuficiente"} 
+GET    /users                                 [Authorization] -> 200 ok   [{"active":true,"created_at":"2026-11-10 13:55:44.864792","email":"joao@email.com","id":1,
+GET    /users/1                               [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+GET    /users/1                               [Authorization] -> 200 ok   {"active":true,"created_at":"2026-11-10 13:55:44.864792","email":"joao@email.com","id":1,"
+PUT    /users/4                               [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+PUT    /users/4                               [Authorization] -> 200 ok   {"active":true,"created_at":"2026-11-10 13:55:45.729762","email":"ana@x.com","id":4,"name"
+POST   /users                                 [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+POST   /users                                 [Authorization] -> 201 ok   {"active":true,"created_at":"2026-11-10 13:55:45.896765","email":"eve@x.com","id":5,"name"
+GET    /reports/summary                       [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+GET    /reports/summary                       [Authorization] -> 200 ok   {"generated_at":"2026-11-10 13:55:45.911868","overdue":{"count":2,"tasks":[{"days_overdue"
+GET    /reports/user/1                        [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+GET    /reports/user/1                        [Authorization] -> 200 ok   {"statistics":{"cancelled":0,"completion_rate":0.0,"done":0,"high_priority":2,"in_progress
+POST   /categories                            [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+POST   /categories                            [Authorization] -> 201 ok   {"color":"#123456","created_at":"2026-11-10 13:55:45.941255","description":"","id":5,"name
+PUT    /categories/5                          [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+PUT    /categories/5                          [Authorization] -> 200 ok   {"color":"#123456","created_at":"2026-11-10 13:55:45.941255","description":"","id":5,"name
+DELETE /categories/5                          [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+DELETE /categories/5                          [Authorization] -> 200 ok   {"message":"Categoria deletada"} 
+DELETE /users/4                               [-]            -> 401 ok   {"error":"Token inv\u00e1lido ou ausente"} 
+DELETE /users/4                               [Authorization] -> 200 ok   {"message":"Usu\u00e1rio deletado com sucesso"} 
+-- resultado: 37/37 verificações ok; tracebacks no log do servidor: 0
